@@ -47,7 +47,7 @@ typedef enum {
 
 // Funktionen definieren
 //----------------------------------------------------------------------
-void collectSystemInfo(void));												// Sammelt Systeminformationen, Schreibt diese auf Uart
+void collectSystemInfo(void);												// Sammelt Systeminformationen, Schreibt diese auf Uart
 reset_reason readResetSource(void);											// Wertet Systemreset aus
 void printResetSource(reset_reason reset_flags);							// Schreibt Systemreset auf Uart
 void collectHardwareInfo(void);												// Sammle Hardware Informationen
