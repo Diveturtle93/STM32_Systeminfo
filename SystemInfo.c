@@ -199,7 +199,7 @@ void collectGitcounts(void)
 	uartTransmit(STRING_GIT_BRANCH_COMMIT_COUNT, sizeof(STRING_GIT_BRANCH_COMMIT_COUNT));
 	uartTransmit(GIT_BRANCH_COMMIT_COUNT, sizeof(GIT_BRANCH_COMMIT_COUNT));	// Git Branch Commits zaehken und Anzahl anzeigen
 
-	uartTransmit(STRING_GIT_LAST_TAG, sizeof(STRING_GIT_LAST_TAG));
+	uartTransmit(STRING_GIT_ACTIVE_BRANCHES, sizeof(STRING_GIT_ACTIVE_BRANCHES));
 	uartTransmit(GIT_ACTIVE_BRANCHES, sizeof(GIT_ACTIVE_BRANCHES));			// Git aktive Branches zaehlen und Anzahl anzeigen
 
 	uartTransmit(STRING_GIT_TAG_COMMIT, sizeof(STRING_GIT_TAG_COMMIT));
