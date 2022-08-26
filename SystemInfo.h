@@ -1,17 +1,17 @@
 //----------------------------------------------------------------------
-// Titel	:	Systeminformationen.h
+// Titel	:	SystemInfo.h
 //----------------------------------------------------------------------
 // Sprache	:	C
-// Datum	:	16.01.2021
+// Datum	:	26.08.2022
 // Version	:	1.0
 // Autor	:	Diveturtle93
-// Projekt	:	STM32F767ZI
+// Projekt	:	STM32_Systeminfo
 //----------------------------------------------------------------------
 
 // Dateiheader definieren
 //----------------------------------------------------------------------
-#ifndef SYSTEMINFO_H_
-#define SYSTEMINFO_H_
+#ifndef INC_SYSTEMINFO_H_
+#define INC_SYSTEMINFO_H_
 //----------------------------------------------------------------------
 
 // Einfügen der standard Include-Dateien
@@ -37,20 +37,23 @@ typedef enum {
 // Build Daten definieren
 //----------------------------------------------------------------------
 #ifndef BUILD_DATE
-#define BUILD_DATE			__DATE__									// Build Datum speichern wenn noch nicht definiert
+	#define BUILD_DATE			__DATE__									// Build Datum speichern wenn noch nicht definiert
 #endif
 
 #ifndef BUILD_TIME
-#define BUILD_TIME			__TIME__									// Build Zeit speichern wenn noch nicht definiert
+	#define BUILD_TIME			__TIME__									// Build Zeit speichern wenn noch nicht definiert
 #endif
 //----------------------------------------------------------------------
 
 // Funktionen definieren
 //----------------------------------------------------------------------
-void collectSystemInfo();												// Sammelt Systeminformationen, Schreibt diese auf Uart
-reset_reason readResetSource();											// Wertet Systemreset aus
-void printResetSource(reset_reason reset_flags);						// Schreibt Systemreset auf Uart
-void collectGitcounts();												// Sammelt Git Zaehlerinformationen, Schreibt diese auf Uart
+void collectSystemInfo(void));												// Sammelt Systeminformationen, Schreibt diese auf Uart
+reset_reason readResetSource(void);											// Wertet Systemreset aus
+void printResetSource(reset_reason reset_flags);							// Schreibt Systemreset auf Uart
+void collectHardwareInfo(void);												// Sammle Hardware Informationen
+void collectSoftwareInfo(void);												// Sammle Software Informationen
+void collectMiddlewareInfo(void);											// Sammle Middleware Informationen
+void collectGitcounts(void);												// Sammle Git Count Informationen
 //----------------------------------------------------------------------
 
 #endif /* INC_SYSTEMINFO_H_ */

@@ -2,10 +2,10 @@
 // Titel	:	BasicUart.h
 //----------------------------------------------------------------------
 // Sprache	:	C
-// Datum	:	16.01.2021
+// Datum	:	26.08.2022
 // Version	:	1.0
 // Autor	:	Diveturtle93
-// Projekt	:	STM32F767ZI
+// Projekt	:	STM32_Systeminfo
 //----------------------------------------------------------------------
 
 // Dateiheader definieren
@@ -14,7 +14,7 @@
 #define INC_BASICUART_H_
 //----------------------------------------------------------------------
 
-// Einfügen der standard Include-Dateien
+// Einfuegen der standard Include-Dateien
 //----------------------------------------------------------------------
 #include <stdint.h>
 #include <stdio.h>
@@ -22,9 +22,10 @@
 
 // Funktionen definieren
 //----------------------------------------------------------------------
-void uartTransmit(const char *str, const size_t size);
-void uartTransmitNumber(const uint32_t number, const uint32_t base);
-void uartReInitBasicPolling(void);
+void uartTransmit(const char *str, const size_t size);						// Sende Daten an Uart
+void uartTransmitString(const char *str);									// Sende String an Uart
+void uartTransmitNumber(const uint32_t number, const uint32_t base);		// Sende Nummer an Uart
+void uartReInitBasicPolling(void);											// Reinitialisiere Uart
 //----------------------------------------------------------------------
 
 #endif /* INC_BASICUART_H_ */

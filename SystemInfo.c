@@ -1,18 +1,15 @@
 //----------------------------------------------------------------------
-// Titel	:	Systeminformationen.c
+// Titel	:	SystemInfo.c
 //----------------------------------------------------------------------
 // Sprache	:	C
-// Datum	:	16.01.2021
+// Datum	:	26.08.2022
 // Version	:	1.0
 // Autor	:	Diveturtle93
-// Projekt	:	STM32F767ZI
+// Projekt	:	STM32_Systeminfo
 //----------------------------------------------------------------------
 
 // Einfuegen der standard Include-Dateien
 //----------------------------------------------------------------------
-#include "inttypes.h"
-#include "stdlib.h"
-#include "string.h"
 #include "stdbool.h"
 //----------------------------------------------------------------------
 
@@ -21,15 +18,16 @@
 #include "git.h"
 #include "SystemInfo.h"
 #include "BasicUart.h"
-#include "git.h"
-#include "error.h"
 //----------------------------------------------------------------------
 
 // Einfuegen der STM Include-Dateien
 //----------------------------------------------------------------------
 #include "stm32f7xx_hal.h"
-#include "cmsis_os.h"														//Collect Information from RTOS CMSIS LAYER
-#include "task.h"															//Collect Information from RTOS
+
+#ifdef INC_TASK_H
+	#include "cmsis_os.h"													//Collect Information from RTOS CMSIS LAYER
+	#include "task.h"														//Collect Information from RTOS
+#endif
 //----------------------------------------------------------------------
 
 
@@ -37,10 +35,10 @@
 //----------------------------------------------------------------------
 void collectHardwareInfo(void)
 {
-	#define STRING_STM_DEVICE_ID			"\nSTM32 Device ID:\t"
-	#define STRING_STM_REVISION				"\nSTM32 Revision ID:\t"
-	#define STRING_STM_FREQ					"\nSTM32 CPU-Freq:\t\t"
-	#define STRING_STM_UUID					"\nSTM32 UUID:\t\t"
+	#define STRING_STM_DEVICE_ID			"\nSTM32 Device ID:\t\t\t"
+	#define STRING_STM_REVISION				"\nSTM32 Revision ID:\t\t\t"
+	#define STRING_STM_FREQ					"\nSTM32 CPU-Freq:\t\t\t\t"
+	#define STRING_STM_UUID					"\nSTM32 UUID:\t\t\t\t"
 
 	uartTransmit(STRING_STM_DEVICE_ID, sizeof(STRING_STM_DEVICE_ID));
 	uartTransmitNumber(HAL_GetDEVID(), 10);									// Mikrocontroller Typ
@@ -90,12 +88,12 @@ void collectHardwareInfo(void)
 
 // Collects Version information from Middleware and prints it
 //----------------------------------------------------------------------
-void collectMiddlewareInfo()
+void collectMiddlewareInfo(void)
 {
-	#define STRING_CMSIS_VERSION			"\nCMSIS Version:\t\t"
-	#define STRING_HAL_VERSION				"\nHAL Version:\t\t"
-	#define STRING_RTOS_CMSIS_VERSION		"\nRTOS CMSIS Version:\t"
-	#define STRING_RTOS_VERSION				"\nRTOS Version:\t\t"
+	#define STRING_CMSIS_VERSION			"\nCMSIS Version:\t\t\t\t"
+	#define STRING_HAL_VERSION				"\nHAL Version:\t\t\t\t"
+	#define STRING_RTOS_CMSIS_VERSION		"\nRTOS CMSIS Version:\t\t\t"
+	#define STRING_RTOS_VERSION				"\nRTOS Version:\t\t\t\t"
 
 	uartTransmit(STRING_CMSIS_VERSION, sizeof(STRING_CMSIS_VERSION));
 	uartTransmitNumber(__CM7_CMSIS_VERSION_MAIN, 10);						// CMSIS Version anzeigen
@@ -115,7 +113,7 @@ void collectMiddlewareInfo()
 	uartTransmit(".", 1);													// Hal Version anzeigen
 	uartTransmitNumber((uint32_t)(HAL_GetHalVersion() & 0xFF), 10);
 
-
+#ifdef INC_TASK_H
 	uartTransmit(STRING_RTOS_CMSIS_VERSION, sizeof(STRING_RTOS_CMSIS_VERSION));
 	uartTransmitNumber((osCMSIS >> 16), 10);								// FreeRTOS CMSIS Version anzeigen
 
@@ -131,6 +129,7 @@ void collectMiddlewareInfo()
 
 	uartTransmit(".", 1);
 	uartTransmitNumber(tskKERNEL_VERSION_BUILD, 10);						// FreeRTOS Kernel Version anzeigen
+#endif
 
 	uartTransmit("\n", 1);
 }
@@ -138,16 +137,16 @@ void collectMiddlewareInfo()
 
 // Collects Software information and prints it
 //----------------------------------------------------------------------
-void collectSoftwareInfo()
+void collectSoftwareInfo(void)
 {
-	#define STRING_GIT_COMMIT				"\nGit Commit:\t\t"
-	#define STRING_GIT_BRANCH				"\nGit Branch:\t\t"
-	#define STRING_GIT_HASH					"\nGit Hash:\t\t"
-	#define STRING_GIT_LAST_TAG				"\nGit letzter Tags:\t\t"
-	#define STRING_GIT_TAG_COMMIT			"\nGit Tags commit:\t\t"
-	#define STRING_GIT_TAG_DIRTY			"\nGit Dirty commit:\t\t"
-	#define STRING_BUILD_DATE				"\nBuild Date:\t\t"
-	#define STRING_BUILD_TIME				"\nBuild Time:\t\t"
+	#define STRING_GIT_COMMIT				"\nGit Commit:\t\t\t\t"
+	#define STRING_GIT_BRANCH				"\nGit Branch:\t\t\t\t"
+	#define STRING_GIT_HASH					"\nGit Hash:\t\t\t\t"
+	#define STRING_GIT_LAST_TAG				"\nGit letzter Tags:\t\t\t"
+	#define STRING_GIT_TAG_COMMIT			"\nGit Tags commit:\t\t\t"
+	#define STRING_GIT_TAG_DIRTY			"\nGit Dirty commit:\t\t\t"
+	#define STRING_BUILD_DATE				"\nBuild Date:\t\t\t\t"
+	#define STRING_BUILD_TIME				"\nBuild Time:\t\t\t\t"
 
 	uartTransmit(STRING_GIT_COMMIT, sizeof(STRING_GIT_COMMIT));
 	uartTransmit(GIT_COMMIT, sizeof(GIT_COMMIT));							// Git Commit anzeigen
@@ -183,13 +182,13 @@ void collectSoftwareInfo()
 
 // Collects Git count information and prints it
 //----------------------------------------------------------------------
-void collectGitcounts()
+void collectGitcounts(void)
 {
-	#define STRING_GIT_TAG_DIRTY_COUNT		"\nGit Dirty count:\t\t"
-	#define STRING_GIT_OVERALL_COMMIT_COUNT	"\nGit Overall count:\t\t"
+	#define STRING_GIT_TAG_DIRTY_COUNT		"\nGit Dirty count:\t\t\t"
+	#define STRING_GIT_OVERALL_COMMIT_COUNT	"\nGit Overall count:\t\t\t"
 	#define STRING_GIT_BRANCH_COMMIT_COUNT	"\nGit Branch commit count:\t\t"
-	#define STRING_GIT_ACTIVE_BRANCHES		"\nGit active Branches:\t\t"
-	#define STRING_GIT_TAG_COUNT			"\nGit Tags count:\t\t"
+	#define STRING_GIT_ACTIVE_BRANCHES		"\nGit active Branches:\t\t\t\t"
+	#define STRING_GIT_TAG_COUNT			"\nGit Tags count:\t\t\t\t"
 
 	uartTransmit(STRING_GIT_TAG_DIRTY_COUNT, sizeof(STRING_GIT_TAG_DIRTY_COUNT));
 	uartTransmit(GIT_TAG_DIRTY_COUNT, sizeof(GIT_TAG_DIRTY_COUNT));			// Git zaehle Dirty commits nach letztem Tags und Anzahl anzeigen
@@ -210,7 +209,7 @@ void collectGitcounts()
 
 // Collects Information from microcontroller and send to UART
 //----------------------------------------------------------------------
-void collectSystemInfo()
+void collectSystemInfo(void)
 {
 	#define STRING_HARDWARE_TITEL			"\n\t --Hardware--\n"
 	#define STRING_MIDDLEWARE_TITEL			"\n\t --Middleware--\n"
@@ -229,7 +228,7 @@ void collectSystemInfo()
 	uartTransmit(STRING_GIT_COUNTS, sizeof(STRING_GIT_COUNTS));
 	collectGitcounts();														// Sammelt Git count Informationen und gibt diese ueber Uart aus
 
-	uartTransmit("\n", 1);
+	uartTransmit("\n\n\n", 1);
 }
 //----------------------------------------------------------------------
 
@@ -239,49 +238,49 @@ reset_reason readResetSource(void)
 {
 	reset_reason reset_flags = STARTUP;
 
-	// Prüfe Reset Flag Internen Watchdog
+	// Pruefe Reset Flag Internen Watchdog
 	if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST) == true)
 	{
 		reset_flags += IWDG1;
 	}
 
-	// Prüfe Reset Flag Window Watchdog
+	// Pruefe Reset Flag Window Watchdog
 	if (__HAL_RCC_GET_FLAG(RCC_FLAG_WWDGRST) == true)
 	{
 		reset_flags += WWDG1;
 	}
 
-	// Prüfe Reset Flag Low Power Reset
+	// Pruefe Reset Flag Low Power Reset
 	if (__HAL_RCC_GET_FLAG(RCC_FLAG_LPWRRST) == true)
 	{
 		reset_flags += CPURST1;
 	}
 
-	// Prüfe Reset Flag Brown Out Reset
+	// Pruefe Reset Flag Brown Out Reset
 	if (__HAL_RCC_GET_FLAG(RCC_FLAG_BORRST) == true)
 	{
 		reset_flags += BORST1;
 	}
 
-	// Prüfe Reset Flag Power On Reset
+	// Pruefe Reset Flag Power On Reset
 	if (__HAL_RCC_GET_FLAG(RCC_FLAG_PORRST) == true)
 	{
 		reset_flags += PORST1;
 	}
 
-	// Prüfe Reset Flag Software Reset
+	// Pruefe Reset Flag Software Reset
 	if (__HAL_RCC_GET_FLAG(RCC_FLAG_SFTRST) == true)
 	{
 		reset_flags += SFTRST1;
 	}
 
-	// Prüfe Reset Flag Pin-Reset
+	// Pruefe Reset Flag Pin-Reset
 	if (__HAL_RCC_GET_FLAG(RCC_FLAG_PINRST) == true)
 	{
 		reset_flags += PINRST1;
 	}
 
-	// Lösche alle Reset Flags
+	// Loesche alle Reset Flags
 	__HAL_RCC_CLEAR_RESET_FLAGS();
 
 	return reset_flags;
@@ -292,7 +291,11 @@ reset_reason readResetSource(void)
 //----------------------------------------------------------------------
 void printResetSource(reset_reason reset_flags)
 {
-	if (reset_flags == STARTUP)												// Regulärer Start
+	// Returns für Absatz nach Neustart.
+	uartTransmit("\r\r\r\r\r\r", 6);
+	
+	
+	if (reset_flags == STARTUP)												// Regulaerer Start
 	{
 		uartTransmit("Regular Start\r\n", 15);
 	}
@@ -327,12 +330,12 @@ void printResetSource(reset_reason reset_flags)
 			uartTransmit("Software Reset\n", 15);
 		}
 
-		if (reset_flags & PINRST1)											//NRST pin
+		if (reset_flags & PINRST1)											// NRST pin
 		{
 			uartTransmit("PIN Reset\n", 10);
 		}
 
-		if (reset_flags & RMVF1)											//NRST pin
+		if (reset_flags & RMVF1)											// NRST pin
 		{
 			uartTransmit("RMVF\n", 5);
 		}
