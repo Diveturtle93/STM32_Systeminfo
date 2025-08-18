@@ -10,8 +10,8 @@
 
 // Dateiheader definieren
 //----------------------------------------------------------------------
-#ifndef SYSTEMINFO_H_
-#define SYSTEMINFO_H_
+#ifndef INC_SYSTEMINFO_H_
+#define INC_SYSTEMINFO_H_
 //----------------------------------------------------------------------
 
 // Build Daten definieren
