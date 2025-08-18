@@ -1,2 +1,2 @@
-# STM32_Systeminfo
-Erstellt Funktionen zur Systeminfo
+# Systeminfo
+Erstellt Funktionen zur Systeminfo eines STM32 µC.
