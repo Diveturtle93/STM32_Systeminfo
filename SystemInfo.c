@@ -32,14 +32,22 @@
 //----------------------------------------------------------------------
 void collectHardwareInfo (void)
 {
+	// Definiere Strings
 	#define STRING_STM_DEVICE_ID			"\nSTM32 Device ID:\t\t"
 	#define STRING_STM_REVISION				"\nSTM32 Revision ID:\t\t"
 	#define STRING_STM_FREQ					"\nSTM32 CPU-Freq:\t\t\t"
 	#define STRING_STM_UUID					"\nSTM32 UUID:\t\t\t"
-
+	#define STRING_CORTEX_CPUID				"\nSTM32 CPUID:	\t\t0x"
+	#define STRING_CORTEX_IMPLEMENTER		"\nCortex Implementer: \t\t"
+	#define STRING_CORTEX_VARIANT			"\nCortex Variant: \t\t"
+	#define STRING_CORTEX_ARCHITECTURE		"\nCortex Architektur: \t\t"
+	#define STRING_CORTEX_PARTNO			"\nCortex Partnummer: \t\t"
+	
+	// Ausgabe Device ID
 	uartTransmit(STRING_STM_DEVICE_ID, sizeof(STRING_STM_DEVICE_ID));
 	uartTransmitNumber(HAL_GetDEVID(), 10);									// Mikrocontroller Typ
 
+	// Ausgabe Revision ID
 	uartTransmit(STRING_STM_REVISION, sizeof(STRING_STM_REVISION));
 
 	switch(HAL_GetREVID())													// Mikrocontroller Revision
@@ -58,7 +66,7 @@ void collectHardwareInfo (void)
 			break;
 	}
 
-
+	// Ausgabe Device Systemfrequenz
 	uartTransmit(STRING_STM_FREQ, sizeof(STRING_STM_FREQ));
 	{
 		uint32_t frequency = HAL_RCC_GetSysClockFreq();						// Systemfrequenz ausgeben
@@ -69,7 +77,7 @@ void collectHardwareInfo (void)
 
 	uartTransmit(" MHz", 4);
 
-
+	// Ausgabe STM32 UUID
 	uartTransmit("\n", 1);
 	uartTransmit(STRING_STM_UUID, sizeof(STRING_STM_UUID));
 	uartTransmitNumber(HAL_GetUIDw0(), 16);									// UID0 ausgeben
@@ -81,6 +89,29 @@ void collectHardwareInfo (void)
 	uartTransmitNumber(HAL_GetUIDw2(), 16);									// UID2 ausgeben
 
 	uartTransmit("\n", 1);
+	
+	// Ausgabe Cortex Information
+	uint32_t cpuid = SCB->CPUID;
+
+	uartTransmit(STRING_CORTEX_CPUID , sizeof(STRING_CORTEX_CPUID));
+	uartTransmitNumber(cpuid, 16);
+	uartTransmit("\n", 1);
+
+	uartTransmit(STRING_CORTEX_IMPLEMENTER , sizeof(STRING_CORTEX_IMPLEMENTER));
+	uartTransmitNumber((cpuid >> SCB_CPUID_IMPLEMENTER_Pos), 10);
+	uartTransmit("\n", 1);
+
+	uartTransmit(STRING_CORTEX_VARIANT , sizeof(STRING_CORTEX_VARIANT));
+	uartTransmitNumber((cpuid >> SCB_CPUID_VARIANT_Pos), 10);
+	uartTransmit("\n", 1);
+
+	uartTransmit(STRING_CORTEX_ARCHITECTURE , sizeof(STRING_CORTEX_ARCHITECTURE));
+	uartTransmitNumber((cpuid >> SCB_CPUID_ARCHITECTURE_Pos), 10);
+	uartTransmit("\n", 1);
+
+	uartTransmit(STRING_CORTEX_PARTNO , sizeof(STRING_CORTEX_PARTNO));
+	uartTransmitNumber((cpuid >> SCB_CPUID_PARTNO_Pos), 10);
+	uartTransmit("\n", 1);
 }
 //----------------------------------------------------------------------
 
@@ -88,19 +119,22 @@ void collectHardwareInfo (void)
 //----------------------------------------------------------------------
 void collectMiddlewareInfo (void)
 {
+	// Definiere Strings
 	#define STRING_CORTEX_CMSIS_VERSION		"\nCortex CMSIS Version:\t\t"
 	#define STRING_STM_CMSIS_VERSION		"\nSTM32F7 CMSIS Version:\t\t"
 	#define STRING_HAL_VERSION				"\nHAL Version:\t\t\t"
 	#define STRING_RTOS_CMSIS_VERSION		"\nRTOS CMSIS Version:\t\t"
 	#define STRING_RTOS_VERSION				"\nRTOS Version:\t\t\t"
-
+	
+	// Ausgabe Cortex CMSIS Version
 	uartTransmit(STRING_CORTEX_CMSIS_VERSION, sizeof(STRING_CORTEX_CMSIS_VERSION));
 	uartTransmitNumber(__CM_CMSIS_VERSION_MAIN, 10);						// Cortex CMSIS Version anzeigen, Main Version
 	uartTransmit(".", 1);
 	uartTransmitNumber(__CM_CMSIS_VERSION_SUB, 10);							// Cortex CMSIS Version anzeigen, Sub Version
 
 	uartTransmit(STRING_STM_CMSIS_VERSION, sizeof(STRING_STM_CMSIS_VERSION));
-
+	
+	// Ausgabe STM32 CMSIS Version
 #ifdef STM32F1
 	uartTransmitNumber(__STM32F1_CMSIS_VERSION_MAIN, 10);					// CMSIS Version anzeigen, Main Version
 	uartTransmit(".", 1);
@@ -129,6 +163,7 @@ void collectMiddlewareInfo (void)
 	uartTransmitNumber(__STM32G0_CMSIS_VERSION_RC, 10);						// CMSIS Version anzeigen, Release candidate
 #endif
 
+	// Ausgabe HAL Version
 	uartTransmit(STRING_HAL_VERSION, sizeof(STRING_HAL_VERSION));			// Hal Version anzeigen
 	uartTransmitNumber((uint32_t)((HAL_GetHalVersion() >> 24) & 0xFF), 10);
 
@@ -141,14 +176,16 @@ void collectMiddlewareInfo (void)
 	uartTransmit(".", 1);													// Hal Version anzeigen
 	uartTransmitNumber((uint32_t)(HAL_GetHalVersion() & 0xFF), 10);
 
+	// Ausgabe Daten für FreeRTOS
 #ifdef INC_TASK_H
+	// Ausgabe RTOS CMSIS Version
 	uartTransmit(STRING_RTOS_CMSIS_VERSION, sizeof(STRING_RTOS_CMSIS_VERSION));
 	uartTransmitNumber((osCMSIS >> 16), 10);								// FreeRTOS CMSIS Version anzeigen
 
 	uartTransmit(".", 1);
 	uartTransmitNumber((osCMSIS & 0xFFFF), 10);								// FreeRTOS CMSIS Version anzeigen
 
-
+	// Ausgabe RTOS Version
 	uartTransmit(STRING_RTOS_VERSION , sizeof(STRING_RTOS_VERSION));
 	uartTransmitNumber(tskKERNEL_VERSION_MAJOR, 10);						// FreeRTOS Kernel Version anzeigen
 
@@ -167,6 +204,7 @@ void collectMiddlewareInfo (void)
 //----------------------------------------------------------------------
 void collectSoftwareInfo (void)
 {
+	// Definiere Strings
 	#define STRING_BUILD_DATE				"\nBuild Date:\t\t\t"
 	#define STRING_BUILD_TIME				"\nBuild Time:\t\t\t"
 	#define STRING_GIT_BUILD_DATE			"\nGit Build Date:\t\t\t"
@@ -179,6 +217,7 @@ void collectSoftwareInfo (void)
 	#define STRING_GIT_TAG_COMMIT			"\nGit Tags commit:\t\t"
 	#define STRING_GIT_TAG_DIRTY			"\nGit Dirty commit:\t\t"
 
+	// Ausgabe Compile Zeit des Programmes
 	uartTransmit(STRING_BUILD_DATE, sizeof(STRING_BUILD_DATE));
 	uartTransmit(BUILD_DATE, sizeof(BUILD_DATE));							// Kompilierdatum anzeigen
 
@@ -187,34 +226,42 @@ void collectSoftwareInfo (void)
 
 	uartTransmit("\n", 1);													// Leerzeile einfuegen
 
+	// Ausgabe der Erstellung der git.h Datei
 	uartTransmit(STRING_GIT_BUILD_DATE, sizeof(STRING_GIT_BUILD_DATE));
 	uartTransmit(GIT_BUILD_DATE, sizeof(GIT_BUILD_DATE));					// Git Kompilierdatum anzeigen von git.h
 
 	uartTransmit(STRING_GIT_BUILD_TIME, sizeof(STRING_GIT_BUILD_TIME));
-	uartTransmit(GIT_BUILD_TIME, sizeof(GIT_BUILD_TIME));					// GIt Kompilierzeit anzeigen von git.h
+	uartTransmit(GIT_BUILD_TIME, sizeof(GIT_BUILD_TIME));					// Git Kompilierzeit anzeigen von git.h
 
 	uartTransmit("\n", 1);													// Leerzeile einfuegen
 
+	// Ausgabe git Commit
 	uartTransmit(STRING_GIT_COMMIT, sizeof(STRING_GIT_COMMIT));
 	uartTransmit(GIT_COMMIT, sizeof(GIT_COMMIT));							// Git Commit anzeigen
 
+	// Ausgabe git Branch
 	uartTransmit(STRING_GIT_BRANCH, sizeof(STRING_GIT_BRANCH));
 	uartTransmit(GIT_BRANCH, sizeof(GIT_BRANCH));							// Git Branch anzeigen
 
+	// Ausgabe git Hash
 	uartTransmit(STRING_GIT_HASH, sizeof(STRING_GIT_HASH));
 	uartTransmit(GIT_HASH, sizeof(GIT_HASH));								// Git Hash anzeigen
 
 	uartTransmit("\n", 1);													// Leerzeile einfuegen
 
+	// Ausgabe git Tags, alle im Branch
 	uartTransmit(STRING_GIT_TAGS, sizeof(STRING_GIT_TAGS));
 	uartTransmit(GIT_TAGS, sizeof(GIT_TAGS));								// Git alle Tags des Branch anzeigen
 
+	// Ausgabe git Tas, letzter im Branch
 	uartTransmit(STRING_GIT_LAST_TAG, sizeof(STRING_GIT_LAST_TAG));
 	uartTransmit(GIT_LAST_TAG, sizeof(GIT_LAST_TAG));						// Git letzten Tags anzeigen
 
+	// Ausgabe git Commit von letztem Tag
 	uartTransmit(STRING_GIT_TAG_COMMIT, sizeof(STRING_GIT_TAG_COMMIT));
 	uartTransmit(GIT_TAG_COMMIT, sizeof(GIT_TAG_COMMIT));					// Git Tags Commit anzeigen
 
+	// Ausgabe git Commit von letztem Tag dirty Format
 	uartTransmit(STRING_GIT_TAG_DIRTY, sizeof(STRING_GIT_TAG_DIRTY));
 	uartTransmit(GIT_TAG_DIRTY, sizeof(GIT_TAG_DIRTY));						// Git Dirty Commit anzeigen
 
@@ -226,24 +273,30 @@ void collectSoftwareInfo (void)
 //----------------------------------------------------------------------
 void collectGitcounts (void)
 {
+	// Definiere Strings
 	#define STRING_GIT_TAG_DIRTY_COUNT		"\nGit Dirty count:\t\t"
 	#define STRING_GIT_OVERALL_COMMIT_COUNT	"\nGit Overall count:\t\t"
 	#define STRING_GIT_BRANCH_COMMIT_COUNT	"\nGit Branch commit count:\t"
 	#define STRING_GIT_ACTIVE_BRANCHES		"\nGit active Branches:\t\t"
 	#define STRING_GIT_TAG_COUNT			"\nGit Tags count:\t\t\t"
 
+	// Ausgabe git Commits zaehlen nach letztem Tags
 	uartTransmit(STRING_GIT_TAG_DIRTY_COUNT, sizeof(STRING_GIT_TAG_DIRTY_COUNT));
 	uartTransmit(GIT_TAG_DIRTY_COUNT, sizeof(GIT_TAG_DIRTY_COUNT));			// Git zaehle Dirty commits nach letztem Tags und Anzahl anzeigen
 
+	// Ausgabe git Commits zaehlen, alle im Repository
 	uartTransmit(STRING_GIT_OVERALL_COMMIT_COUNT, sizeof(STRING_GIT_OVERALL_COMMIT_COUNT));
 	uartTransmit(GIT_OVERALL_COMMIT_COUNT, sizeof(GIT_OVERALL_COMMIT_COUNT));// Git alle Commits zaehlen und Anzahl anzeigen
 
+	// Ausgabe git Commits zaehlen, alle im Vranch
 	uartTransmit(STRING_GIT_BRANCH_COMMIT_COUNT, sizeof(STRING_GIT_BRANCH_COMMIT_COUNT));
-	uartTransmit(GIT_BRANCH_COMMIT_COUNT, sizeof(GIT_BRANCH_COMMIT_COUNT));	// Git Branch Commits zaehken und Anzahl anzeigen
+	uartTransmit(GIT_BRANCH_COMMIT_COUNT, sizeof(GIT_BRANCH_COMMIT_COUNT));	// Git Branch Commits zaehlen und Anzahl anzeigen
 
+	// Ausgabe git Branches zaehlen
 	uartTransmit(STRING_GIT_ACTIVE_BRANCHES, sizeof(STRING_GIT_ACTIVE_BRANCHES));
 	uartTransmit(GIT_ACTIVE_BRANCHES, sizeof(GIT_ACTIVE_BRANCHES));			// Git aktive Branches zaehlen und Anzahl anzeigen
 
+	// Ausgabe git Tags zaehlen
 	uartTransmit(STRING_GIT_TAG_COUNT, sizeof(STRING_GIT_TAG_COUNT));
 	uartTransmit(GIT_TAG_COUNT, sizeof(GIT_TAG_COUNT));						// Git Tags zaehlen und Anzahl anzeigen
 }
@@ -253,20 +306,25 @@ void collectGitcounts (void)
 //----------------------------------------------------------------------
 void collectSystemInfo(void)
 {
+	// Definiere Strings
 	#define STRING_HARDWARE_TITEL			"\n\t --Hardware--\n"
 	#define STRING_MIDDLEWARE_TITEL			"\n\t --Middleware--\n"
 	#define STRING_SOFTWARE_TITEL			"\n\t --Software--\n"
 	#define STRING_GIT_COUNTS				"\n\t --Git counts--\n"
 
+	// Ausgabe Hardware Information
 	uartTransmit(STRING_HARDWARE_TITEL, sizeof(STRING_HARDWARE_TITEL));
 	collectHardwareInfo();													// Sammelt Hardware Informationen und gibt diese ueber Uart aus
 
+	// Ausgabe Software Information
 	uartTransmit(STRING_SOFTWARE_TITEL, sizeof(STRING_SOFTWARE_TITEL));
 	collectSoftwareInfo();													// Sammelt Software Informationen und gibt diese ueber Uart aus
 
+	// Ausgabe Middleware Information
 	uartTransmit(STRING_MIDDLEWARE_TITEL, sizeof(STRING_MIDDLEWARE_TITEL));
 	collectMiddlewareInfo();												// Sammelt Middleware Informationen und gibt diese ueber Uart aus
 
+	// Ausgabe Git Count Information
 	uartTransmit(STRING_GIT_COUNTS, sizeof(STRING_GIT_COUNTS));
 	collectGitcounts();														// Sammelt Git count Informationen und gibt diese ueber Uart aus
 
