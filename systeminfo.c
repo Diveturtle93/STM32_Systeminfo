@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-// Titel	:	SystemInfo.c
+// Titel	:	systeminfo.c
 //----------------------------------------------------------------------
 // Sprache	:	C
 // Datum	:	16.01.2021
@@ -13,18 +13,18 @@
 
 //----------------------------------------------------------------------
 
-// Einfuegen der eigenen Include-Dateien
-//----------------------------------------------------------------------
-#include "main.h"
-#include "git.h"
-#include "SystemInfo.h"
-#include "BasicUart.h"
-//----------------------------------------------------------------------
-
 // Einfuegen der STM Include-Dateien
 //----------------------------------------------------------------------
+#include "main.h"
 //#include "cmsis_os.h"														//Collect Information from RTOS CMSIS LAYER
 //#include "task.h"															//Collect Information from RTOS
+//----------------------------------------------------------------------
+
+// Einfuegen der eigenen Include-Dateien
+//----------------------------------------------------------------------
+#include "basicuart.h"
+#include "git.h"
+#include "systeminfo.h"
 //----------------------------------------------------------------------
 
 
@@ -99,15 +99,12 @@ void collectHardwareInfo (void)
 
 	uartTransmit(STRING_CORTEX_IMPLEMENTER , sizeof(STRING_CORTEX_IMPLEMENTER));
 	uartTransmitNumber((cpuid >> SCB_CPUID_IMPLEMENTER_Pos), 10);
-	uartTransmit("\n", 1);
 
 	uartTransmit(STRING_CORTEX_VARIANT , sizeof(STRING_CORTEX_VARIANT));
 	uartTransmitNumber((cpuid >> SCB_CPUID_VARIANT_Pos), 10);
-	uartTransmit("\n", 1);
 
 	uartTransmit(STRING_CORTEX_ARCHITECTURE , sizeof(STRING_CORTEX_ARCHITECTURE));
 	uartTransmitNumber((cpuid >> SCB_CPUID_ARCHITECTURE_Pos), 10);
-	uartTransmit("\n", 1);
 
 	uartTransmit(STRING_CORTEX_PARTNO , sizeof(STRING_CORTEX_PARTNO));
 	uartTransmitNumber((cpuid >> SCB_CPUID_PARTNO_Pos), 10);
