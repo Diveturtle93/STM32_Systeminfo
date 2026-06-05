@@ -8,21 +8,41 @@
 // Projekt	:	SystemInfo
 //----------------------------------------------------------------------
 
+// Saveguard symbol
+//----------------------------------------------------------------------
+#pragma once
+//----------------------------------------------------------------------
+
 // Dateiheader definieren
 //----------------------------------------------------------------------
 #ifndef INC_SYSTEMINFO_H_
 #define INC_SYSTEMINFO_H_
 //----------------------------------------------------------------------
 
+// Definiere Debug Symbols
+//----------------------------------------------------------------------
+#ifdef DEBUG
+	#define DEBUG_SYSTEMINFO
+#endif
+//----------------------------------------------------------------------
+
 // Build Daten definieren
 //----------------------------------------------------------------------
 #ifndef BUILD_DATE
-#define BUILD_DATE			__DATE__										// Build Datum speichern wenn noch nicht definiert
+#define BUILD_DATE						__DATE__							// Build Datum speichern wenn noch nicht definiert
 #endif
 
 #ifndef BUILD_TIME
-#define BUILD_TIME			__TIME__										// Build Zeit speichern wenn noch nicht definiert
+#define BUILD_TIME						__TIME__							// Build Zeit speichern wenn noch nicht definiert
 #endif
+//----------------------------------------------------------------------
+
+// Version definieren
+//----------------------------------------------------------------------
+#define SYSTEMINFO_MAJOR				0
+#define SYSTEMINFO_MINOR				0
+#define SYSTEMINFO_PATCH				0
+#define SYSTEMINFO_DEV					0
 //----------------------------------------------------------------------
 
 // Funktionen definieren

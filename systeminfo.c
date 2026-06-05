@@ -32,6 +32,7 @@
 //----------------------------------------------------------------------
 void collectHardwareInfo (void)
 {
+#ifdef DEBUG_SYSTEMINFO
 	// Definiere Strings
 	#define STRING_STM_DEVICE_ID			"\nSTM32 Device ID:\t\t"
 	#define STRING_STM_REVISION				"\nSTM32 Revision ID:\t\t"
@@ -109,6 +110,7 @@ void collectHardwareInfo (void)
 	uartTransmit(STRING_CORTEX_PARTNO , sizeof(STRING_CORTEX_PARTNO));
 	uartTransmitNumber((cpuid >> SCB_CPUID_PARTNO_Pos), 10);
 	uartTransmit("\n", 1);
+#endif
 }
 //----------------------------------------------------------------------
 
@@ -116,9 +118,20 @@ void collectHardwareInfo (void)
 //----------------------------------------------------------------------
 void collectMiddlewareInfo (void)
 {
+#ifdef DEBUG_SYSTEMINFO
 	// Definiere Strings
 	#define STRING_CORTEX_CMSIS_VERSION		"\nCortex CMSIS Version:\t\t"
+		
+#ifdef STM32F1
+	#define STRING_STM_CMSIS_VERSION		"\nSTM32F1 CMSIS Version:\t\t"
+#endif
+#ifdef STM32F7
 	#define STRING_STM_CMSIS_VERSION		"\nSTM32F7 CMSIS Version:\t\t"
+#endif
+#ifdef STM32G0
+	#define STRING_STM_CMSIS_VERSION		"\nSTM32G0 CMSIS Version:\t\t"
+#endif
+
 	#define STRING_HAL_VERSION				"\nHAL Version:\t\t\t"
 	#define STRING_RTOS_CMSIS_VERSION		"\nRTOS CMSIS Version:\t\t"
 	#define STRING_RTOS_VERSION				"\nRTOS Version:\t\t\t"
@@ -194,6 +207,7 @@ void collectMiddlewareInfo (void)
 #endif
 
 	uartTransmit("\n", 1);
+#endif
 }
 //----------------------------------------------------------------------
 
@@ -201,6 +215,7 @@ void collectMiddlewareInfo (void)
 //----------------------------------------------------------------------
 void collectSoftwareInfo (void)
 {
+#ifdef DEBUG_SYSTEMINFO
 	// Definiere Strings
 	#define STRING_BUILD_DATE				"\nBuild Date:\t\t\t"
 	#define STRING_BUILD_TIME				"\nBuild Time:\t\t\t"
@@ -263,6 +278,7 @@ void collectSoftwareInfo (void)
 	uartTransmit(GIT_TAG_DIRTY, sizeof(GIT_TAG_DIRTY));						// Git Dirty Commit anzeigen
 
 	uartTransmit("\n", 1);													// Leerzeile einfuegen
+#endif
 }
 //----------------------------------------------------------------------
 
@@ -270,6 +286,7 @@ void collectSoftwareInfo (void)
 //----------------------------------------------------------------------
 void collectGitcounts (void)
 {
+#ifdef DEBUG_SYSTEMINFO
 	// Definiere Strings
 	#define STRING_GIT_TAG_DIRTY_COUNT		"\nGit Dirty count:\t\t"
 	#define STRING_GIT_OVERALL_COMMIT_COUNT	"\nGit Overall count:\t\t"
@@ -296,6 +313,7 @@ void collectGitcounts (void)
 	// Ausgabe git Tags zaehlen
 	uartTransmit(STRING_GIT_TAG_COUNT, sizeof(STRING_GIT_TAG_COUNT));
 	uartTransmit(GIT_TAG_COUNT, sizeof(GIT_TAG_COUNT));						// Git Tags zaehlen und Anzahl anzeigen
+#endif
 }
 //----------------------------------------------------------------------
 
@@ -303,6 +321,7 @@ void collectGitcounts (void)
 //----------------------------------------------------------------------
 void collectSystemInfo(void)
 {
+#ifdef DEBUG_SYSTEMINFO
 	// Definiere Strings
 	#define STRING_HARDWARE_TITEL			"\n\t --Hardware--\n"
 	#define STRING_MIDDLEWARE_TITEL			"\n\t --Middleware--\n"
@@ -326,5 +345,6 @@ void collectSystemInfo(void)
 	collectGitcounts();														// Sammelt Git count Informationen und gibt diese ueber Uart aus
 
 	uartTransmit("\n\n\n", 3);
+#endif
 }
 //----------------------------------------------------------------------
