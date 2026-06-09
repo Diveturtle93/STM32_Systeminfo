@@ -16,8 +16,8 @@
 // Einfuegen der STM Include-Dateien
 //----------------------------------------------------------------------
 #include "main.h"
-//#include "cmsis_os.h"														//Collect Information from RTOS CMSIS LAYER
-//#include "task.h"															//Collect Information from RTOS
+//#include "cmsis_os.h"														// Sammelt Information vom RTOS CMSIS LAYER
+//#include "task.h"															// Sammelt Information vom RTOS
 //----------------------------------------------------------------------
 
 // Einfuegen der eigenen Include-Dateien
@@ -28,7 +28,7 @@
 //----------------------------------------------------------------------
 
 
-// Collects hardware information from microcontroller and prints it
+// Sammelt Hardware Information vom Mikrocontroller
 //----------------------------------------------------------------------
 void collectHardwareInfo (void)
 {
@@ -51,7 +51,7 @@ void collectHardwareInfo (void)
 	// Ausgabe Revision ID
 	uartTransmit(STRING_STM_REVISION, sizeof(STRING_STM_REVISION));
 
-	switch(HAL_GetREVID())													// Mikrocontroller Revision
+	switch (HAL_GetREVID())													// Mikrocontroller Revision
 	{
 		case 0x1001:
 			uartTransmit("Z", 1);
@@ -69,13 +69,10 @@ void collectHardwareInfo (void)
 
 	// Ausgabe Device Systemfrequenz
 	uartTransmit(STRING_STM_FREQ, sizeof(STRING_STM_FREQ));
-	{
-		uint32_t frequency = HAL_RCC_GetSysClockFreq();						// Systemfrequenz ausgeben
-		frequency = frequency / 1000000;
+	uint32_t frequency = HAL_RCC_GetSysClockFreq();							// Systemfrequenz ausgeben
+	frequency = frequency / 1000000;
 
-		uartTransmitNumber(frequency, 10);
-	}
-
+	uartTransmitNumber(frequency, 10);
 	uartTransmit(" MHz", 4);
 
 	// Ausgabe STM32 UUID
@@ -114,7 +111,7 @@ void collectHardwareInfo (void)
 }
 //----------------------------------------------------------------------
 
-// Collects Version information from Middleware and prints it
+// Sammelt Versionsinformation von der Middleware
 //----------------------------------------------------------------------
 void collectMiddlewareInfo (void)
 {
@@ -211,7 +208,7 @@ void collectMiddlewareInfo (void)
 }
 //----------------------------------------------------------------------
 
-// Collects Software information and prints it
+// Sammelt Software Information
 //----------------------------------------------------------------------
 void collectSoftwareInfo (void)
 {
@@ -282,7 +279,7 @@ void collectSoftwareInfo (void)
 }
 //----------------------------------------------------------------------
 
-// Collects Git count information and prints it
+// Sammelt Git Zähler Information
 //----------------------------------------------------------------------
 void collectGitcounts (void)
 {
@@ -317,7 +314,7 @@ void collectGitcounts (void)
 }
 //----------------------------------------------------------------------
 
-// Collects Information from microcontroller and send to UART
+// Sammelt Information von Hardware, Middleware und Software
 //----------------------------------------------------------------------
 void collectSystemInfo(void)
 {
