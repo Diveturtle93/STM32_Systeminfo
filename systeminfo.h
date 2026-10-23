@@ -3,12 +3,12 @@
 //----------------------------------------------------------------------
 // Sprache	:	C
 // Datum	:	16.01.2021
-// Version	:	1.0
 // Autor	:	Diveturtle93
-// Projekt	:	SystemInfo
+// Projekt	:	Systeminfo
+// Quelle	:
 //----------------------------------------------------------------------
 
-// Saveguard symbol
+// Sicherheitssymbol
 //----------------------------------------------------------------------
 #pragma once
 //----------------------------------------------------------------------
@@ -29,12 +29,12 @@
 
 //----------------------------------------------------------------------
 
-// Einfuegen der eigenen Include Dateien
+// Einfuegen der eigenen Include-Dateien
 //----------------------------------------------------------------------
 
 //----------------------------------------------------------------------
 
-// Definiere Debug Symbols
+// Definiere Debug-Symbole
 //----------------------------------------------------------------------
 #ifdef DEBUG
 	#define DEBUG_SYSTEMINFO
@@ -44,20 +44,20 @@
 // Build Daten definieren
 //----------------------------------------------------------------------
 #ifndef BUILD_DATE
-#define BUILD_DATE						__DATE__							// Build Datum speichern wenn noch nicht definiert
+#define BUILD_DATE								__DATE__					// Build Datum speichern wenn noch nicht definiert
 #endif
 
 #ifndef BUILD_TIME
-#define BUILD_TIME						__TIME__							// Build Zeit speichern wenn noch nicht definiert
+#define BUILD_TIME								__TIME__					// Build Zeit speichern wenn noch nicht definiert
 #endif
 //----------------------------------------------------------------------
 
 // Version definieren
 //----------------------------------------------------------------------
-#define SYSTEMINFO_MAJOR				0
-#define SYSTEMINFO_MINOR				0
-#define SYSTEMINFO_PATCH				0
-#define SYSTEMINFO_DEV					0
+#define SYSTEMINFO_MAJOR						0
+#define SYSTEMINFO_MINOR						0
+#define SYSTEMINFO_PATCH						0
+#define SYSTEMINFO_DEV							1
 //----------------------------------------------------------------------
 
 // Funktionen definieren

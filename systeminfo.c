@@ -3,9 +3,9 @@
 //----------------------------------------------------------------------
 // Sprache	:	C
 // Datum	:	16.01.2021
-// Version	:	1.0
 // Autor	:	Diveturtle93
-// Projekt	:	SystemInfo
+// Projekt	:	Systeminfo
+// Quelle	:
 //----------------------------------------------------------------------
 
 // Einfuegen der standard Include-Dateien
@@ -16,8 +16,8 @@
 // Einfuegen der STM Include-Dateien
 //----------------------------------------------------------------------
 #include "main.h"
-//#include "cmsis_os.h"														// Sammelt Information vom RTOS CMSIS LAYER
-//#include "task.h"															// Sammelt Information vom RTOS
+// #include "cmsis_os.h"														// Sammelt Information vom RTOS CMSIS LAYER
+// #include "task.h"															// Sammelt Information vom RTOS
 //----------------------------------------------------------------------
 
 // Einfuegen der eigenen Include-Dateien
@@ -27,6 +27,10 @@
 #include "systeminfo.h"
 //----------------------------------------------------------------------
 
+// Variablen definieren
+//----------------------------------------------------------------------
+
+//----------------------------------------------------------------------
 
 // Sammelt Hardware Information vom Mikrocontroller
 //----------------------------------------------------------------------
@@ -34,15 +38,16 @@ void collectHardwareInfo (void)
 {
 #ifdef DEBUG_SYSTEMINFO
 	// Definiere Strings
-	#define STRING_STM_DEVICE_ID			"\nSTM32 Device ID:\t\t"
-	#define STRING_STM_REVISION				"\nSTM32 Revision ID:\t\t"
-	#define STRING_STM_FREQ					"\nSTM32 CPU-Freq:\t\t\t"
-	#define STRING_STM_UUID					"\nSTM32 UUID:\t\t\t"
-	#define STRING_CORTEX_CPUID				"\nSTM32 CPUID:	\t\t0x"
-	#define STRING_CORTEX_IMPLEMENTER		"\nCortex Implementer: \t\t"
-	#define STRING_CORTEX_VARIANT			"\nCortex Variant: \t\t"
-	#define STRING_CORTEX_ARCHITECTURE		"\nCortex Architektur: \t\t"
-	#define STRING_CORTEX_PARTNO			"\nCortex Partnummer: \t\t"
+	#define STRING_STM_DEVICE_ID				"\nSTM32 Device ID:\t\t"
+	#define STRING_STM_REVISION					"\nSTM32 Revision ID:\t\t"
+	#define STRING_STM_FREQ						"\nSTM32 CPU-Freq:\t\t\t"
+	#define STRING_STM_UUID						"\nSTM32 UUID:\t\t\t"
+	#define STRING_CORTEX_CPUID					"\nSTM32 CPUID:	\t\t0x"
+	#define STRING_CORTEX_IMPLEMENTER			"\nCortex Implementer: \t\t"
+	#define STRING_CORTEX_VARIANT				"\nCortex Variant: \t\t"
+	#define STRING_CORTEX_ARCHITECTURE			"\nCortex Architektur: \t\t"
+	#define STRING_CORTEX_PARTNO				"\nCortex Partnummer: \t\t"
+	#define STRING_CORTEX_REVISION				"\nCortex Revision: \t\t"
 	
 	// Ausgabe Device ID
 	uartTransmit(STRING_STM_DEVICE_ID, sizeof(STRING_STM_DEVICE_ID));
@@ -54,17 +59,25 @@ void collectHardwareInfo (void)
 	switch (HAL_GetREVID())													// Mikrocontroller Revision
 	{
 		case 0x1001:
+		{
 			uartTransmit("Z", 1);
 			break;
+		}
 		case 0x1003:
+		{
 			uartTransmit("Y", 1);
 			break;
+		}
 		case 0x2001:
+		{
 			uartTransmit("X", 1);
 			break;
+		}
 		default:
+		{
 			uartTransmitNumber(HAL_GetREVID(), 10);
 			break;
+		}
 	}
 
 	// Ausgabe Device Systemfrequenz
@@ -96,16 +109,19 @@ void collectHardwareInfo (void)
 	uartTransmit("\n", 1);
 
 	uartTransmit(STRING_CORTEX_IMPLEMENTER , sizeof(STRING_CORTEX_IMPLEMENTER));
-	uartTransmitNumber((cpuid >> SCB_CPUID_IMPLEMENTER_Pos), 10);
+	uartTransmitNumber(((cpuid & SCB_CPUID_IMPLEMENTER_Msk) >> SCB_CPUID_IMPLEMENTER_Pos), 16);
 
 	uartTransmit(STRING_CORTEX_VARIANT , sizeof(STRING_CORTEX_VARIANT));
-	uartTransmitNumber((cpuid >> SCB_CPUID_VARIANT_Pos), 10);
+	uartTransmitNumber(((cpuid & SCB_CPUID_VARIANT_Msk) >> SCB_CPUID_VARIANT_Pos), 10);
 
 	uartTransmit(STRING_CORTEX_ARCHITECTURE , sizeof(STRING_CORTEX_ARCHITECTURE));
-	uartTransmitNumber((cpuid >> SCB_CPUID_ARCHITECTURE_Pos), 10);
+	uartTransmitNumber(((cpuid & SCB_CPUID_ARCHITECTURE_Msk) >> SCB_CPUID_ARCHITECTURE_Pos), 16);
 
 	uartTransmit(STRING_CORTEX_PARTNO , sizeof(STRING_CORTEX_PARTNO));
-	uartTransmitNumber((cpuid >> SCB_CPUID_PARTNO_Pos), 10);
+	uartTransmitNumber(((cpuid & SCB_CPUID_PARTNO_Msk) >> SCB_CPUID_PARTNO_Pos), 16);
+
+	uartTransmit(STRING_CORTEX_REVISION , sizeof(STRING_CORTEX_REVISION));
+	uartTransmitNumber(((cpuid & SCB_CPUID_REVISION_Msk) >> SCB_CPUID_REVISION_Pos), 10);
 	uartTransmit("\n", 1);
 #endif
 }
@@ -117,21 +133,21 @@ void collectMiddlewareInfo (void)
 {
 #ifdef DEBUG_SYSTEMINFO
 	// Definiere Strings
-	#define STRING_CORTEX_CMSIS_VERSION		"\nCortex CMSIS Version:\t\t"
+	#define STRING_CORTEX_CMSIS_VERSION			"\nCortex CMSIS Version:\t\t"
 		
 #ifdef STM32F1
-	#define STRING_STM_CMSIS_VERSION		"\nSTM32F1 CMSIS Version:\t\t"
+	#define STRING_STM_CMSIS_VERSION			"\nSTM32F1 CMSIS Version:\t\t"
 #endif
 #ifdef STM32F7
-	#define STRING_STM_CMSIS_VERSION		"\nSTM32F7 CMSIS Version:\t\t"
+	#define STRING_STM_CMSIS_VERSION			"\nSTM32F7 CMSIS Version:\t\t"
 #endif
 #ifdef STM32G0
-	#define STRING_STM_CMSIS_VERSION		"\nSTM32G0 CMSIS Version:\t\t"
+	#define STRING_STM_CMSIS_VERSION			"\nSTM32G0 CMSIS Version:\t\t"
 #endif
 
-	#define STRING_HAL_VERSION				"\nHAL Version:\t\t\t"
-	#define STRING_RTOS_CMSIS_VERSION		"\nRTOS CMSIS Version:\t\t"
-	#define STRING_RTOS_VERSION				"\nRTOS Version:\t\t\t"
+	#define STRING_HAL_VERSION					"\nHAL Version:\t\t\t"
+	#define STRING_RTOS_CMSIS_VERSION			"\nRTOS CMSIS Version:\t\t"
+	#define STRING_RTOS_VERSION					"\nRTOS Version:\t\t\t"
 	
 	// Ausgabe Cortex CMSIS Version
 	uartTransmit(STRING_CORTEX_CMSIS_VERSION, sizeof(STRING_CORTEX_CMSIS_VERSION));
@@ -183,7 +199,7 @@ void collectMiddlewareInfo (void)
 	uartTransmit(".", 1);													// Hal Version anzeigen
 	uartTransmitNumber((uint32_t)(HAL_GetHalVersion() & 0xFF), 10);
 
-	// Ausgabe Daten für FreeRTOS
+	// Ausgabe Daten fuer FreeRTOS
 #ifdef INC_TASK_H
 	// Ausgabe RTOS CMSIS Version
 	uartTransmit(STRING_RTOS_CMSIS_VERSION, sizeof(STRING_RTOS_CMSIS_VERSION));
@@ -214,17 +230,17 @@ void collectSoftwareInfo (void)
 {
 #ifdef DEBUG_SYSTEMINFO
 	// Definiere Strings
-	#define STRING_BUILD_DATE				"\nBuild Date:\t\t\t"
-	#define STRING_BUILD_TIME				"\nBuild Time:\t\t\t"
-	#define STRING_GIT_BUILD_DATE			"\nGit Build Date:\t\t\t"
-	#define STRING_GIT_BUILD_TIME			"\nGit Build Time:\t\t\t"
-	#define STRING_GIT_COMMIT				"\nGit Commit:\t\t\t"
-	#define STRING_GIT_BRANCH				"\nGit Branch:\t\t\t"
-	#define STRING_GIT_HASH					"\nGit Hash:\t\t\t"
-	#define STRING_GIT_TAGS					"\nGit Branch Tags:\t\t"
-	#define STRING_GIT_LAST_TAG				"\nGit letzter Tags:\t\t"
-	#define STRING_GIT_TAG_COMMIT			"\nGit Tags commit:\t\t"
-	#define STRING_GIT_TAG_DIRTY			"\nGit Dirty commit:\t\t"
+	#define STRING_BUILD_DATE					"\nBuild Date:\t\t\t"
+	#define STRING_BUILD_TIME					"\nBuild Time:\t\t\t"
+	#define STRING_GIT_BUILD_DATE				"\nGit Build Date:\t\t\t"
+	#define STRING_GIT_BUILD_TIME				"\nGit Build Time:\t\t\t"
+	#define STRING_GIT_COMMIT					"\nGit Commit:\t\t\t"
+	#define STRING_GIT_BRANCH					"\nGit Branch:\t\t\t"
+	#define STRING_GIT_HASH						"\nGit Hash:\t\t\t"
+	#define STRING_GIT_TAGS						"\nGit Branch Tags:\t\t"
+	#define STRING_GIT_LAST_TAG					"\nGit letzter Tags:\t\t"
+	#define STRING_GIT_TAG_COMMIT				"\nGit Tags commit:\t\t"
+	#define STRING_GIT_TAG_DIRTY				"\nGit Dirty commit:\t\t"
 
 	// Ausgabe Compile Zeit des Programmes
 	uartTransmit(STRING_BUILD_DATE, sizeof(STRING_BUILD_DATE));
@@ -262,7 +278,7 @@ void collectSoftwareInfo (void)
 	uartTransmit(STRING_GIT_TAGS, sizeof(STRING_GIT_TAGS));
 	uartTransmit(GIT_TAGS, sizeof(GIT_TAGS));								// Git alle Tags des Branch anzeigen
 
-	// Ausgabe git Tas, letzter im Branch
+	// Ausgabe git Tags, letzter im Branch
 	uartTransmit(STRING_GIT_LAST_TAG, sizeof(STRING_GIT_LAST_TAG));
 	uartTransmit(GIT_LAST_TAG, sizeof(GIT_LAST_TAG));						// Git letzten Tags anzeigen
 
@@ -279,17 +295,17 @@ void collectSoftwareInfo (void)
 }
 //----------------------------------------------------------------------
 
-// Sammelt Git Zähler Information
+// Sammelt Git Zaehler Information
 //----------------------------------------------------------------------
 void collectGitcounts (void)
 {
 #ifdef DEBUG_SYSTEMINFO
 	// Definiere Strings
-	#define STRING_GIT_TAG_DIRTY_COUNT		"\nGit Dirty count:\t\t"
-	#define STRING_GIT_OVERALL_COMMIT_COUNT	"\nGit Overall count:\t\t"
-	#define STRING_GIT_BRANCH_COMMIT_COUNT	"\nGit Branch commit count:\t"
-	#define STRING_GIT_ACTIVE_BRANCHES		"\nGit active Branches:\t\t"
-	#define STRING_GIT_TAG_COUNT			"\nGit Tags count:\t\t\t"
+	#define STRING_GIT_TAG_DIRTY_COUNT			"\nGit Dirty count:\t\t"
+	#define STRING_GIT_OVERALL_COMMIT_COUNT		"\nGit Overall count:\t\t"
+	#define STRING_GIT_BRANCH_COMMIT_COUNT		"\nGit Branch commit count:\t"
+	#define STRING_GIT_ACTIVE_BRANCHES			"\nGit active Branches:\t\t"
+	#define STRING_GIT_TAG_COUNT				"\nGit Tags count:\t\t\t"
 
 	// Ausgabe git Commits zaehlen nach letztem Tags
 	uartTransmit(STRING_GIT_TAG_DIRTY_COUNT, sizeof(STRING_GIT_TAG_DIRTY_COUNT));
@@ -299,7 +315,7 @@ void collectGitcounts (void)
 	uartTransmit(STRING_GIT_OVERALL_COMMIT_COUNT, sizeof(STRING_GIT_OVERALL_COMMIT_COUNT));
 	uartTransmit(GIT_OVERALL_COMMIT_COUNT, sizeof(GIT_OVERALL_COMMIT_COUNT));// Git alle Commits zaehlen und Anzahl anzeigen
 
-	// Ausgabe git Commits zaehlen, alle im Vranch
+	// Ausgabe git Commits zaehlen, alle im Branch
 	uartTransmit(STRING_GIT_BRANCH_COMMIT_COUNT, sizeof(STRING_GIT_BRANCH_COMMIT_COUNT));
 	uartTransmit(GIT_BRANCH_COMMIT_COUNT, sizeof(GIT_BRANCH_COMMIT_COUNT));	// Git Branch Commits zaehlen und Anzahl anzeigen
 
@@ -316,14 +332,14 @@ void collectGitcounts (void)
 
 // Sammelt Information von Hardware, Middleware und Software
 //----------------------------------------------------------------------
-void collectSystemInfo(void)
+void collectSystemInfo (void)
 {
 #ifdef DEBUG_SYSTEMINFO
 	// Definiere Strings
-	#define STRING_HARDWARE_TITEL			"\n\t --Hardware--\n"
-	#define STRING_MIDDLEWARE_TITEL			"\n\t --Middleware--\n"
-	#define STRING_SOFTWARE_TITEL			"\n\t --Software--\n"
-	#define STRING_GIT_COUNTS				"\n\t --Git counts--\n"
+	#define STRING_HARDWARE_TITEL				"\n\t --Hardware--\n"
+	#define STRING_MIDDLEWARE_TITEL				"\n\t --Middleware--\n"
+	#define STRING_SOFTWARE_TITEL				"\n\t --Software--\n"
+	#define STRING_GIT_COUNTS					"\n\t --Git counts--\n"
 
 	// Ausgabe Hardware Information
 	uartTransmit(STRING_HARDWARE_TITEL, sizeof(STRING_HARDWARE_TITEL));
